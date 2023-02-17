@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "description": "A little todo application",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "install:client": "npm install --prefix client",
+    "install:server": "npm install --prefix server",
+    "install": "npm run install:client && npm run install:server",
+    "start:client": "npm start --prefix client",
+    "start:server": "npm start --prefix server",
+    "start": "npm start:client && npm start:server"
   },
   "keywords": [],
   "author": "Mohammad Saadati",
