@@ -1,6 +1,9 @@
-import { Knex } from "knex";
+import knex, { Knex } from "knex";
+import { config } from "dotenv";
 
-const config: { [key: string]: Knex.Config } = {
+config();
+
+const dbConfig: { [key: string]: Knex.Config } = {
   development: {
     client: process.env.DB_CLIENT,
     connection: {
@@ -12,13 +15,15 @@ const config: { [key: string]: Knex.Config } = {
     },
     migrations: {
       directory: "./migrations",
-      extension: "ts",
+      extension: ".ts",
     },
     seeds: {
-      directory: "./seeds",
-      extension: "ts",
+      directory: "src/db/seeds",
+      extension: ".ts",
     },
   },
 };
 
-export default config;
+
+export const database = knex(dbConfig["development"]);
+
