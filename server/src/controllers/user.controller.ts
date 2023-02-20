@@ -1,26 +1,26 @@
 import { Request, Response } from "express";
 
-import UserModel from "../models/user.model";
+import userModel from "../models/user.model";
 
-class UserController {
-  model: any = null;
+async function login(req: Request, res: Response) {
+  const { email, password } = req.body;
 
-  constructor() {
-    this.model = new UserModel();
-  }
+  const user = await userModel.login(email, password);
 
-  async login(req: Request, res: Response) {
-    const { email, password } = req.body;
-    // console.log(req.body);
+  // res.cookie("session", JSON.stringify(user))
+  if (req.session) req.session.user = user;
 
-    const user = await new UserModel().login(email, password);
-    // const user = await this.model.login(email, password);
-    console.log(user);
-    
-
-    return res.json(user);
-    // return res.json({ res: true, ...req.body });
-  }
+  return res.json(user);
 }
 
-export default UserController;
+async function get(req: Request, res: Response) {
+  console.log(req.session);
+  if (req.session) return res.json(req.session.user);
+}
+
+const userController = {
+  login,
+  get,
+};
+
+export default userController;

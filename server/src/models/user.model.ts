@@ -12,55 +12,49 @@ export interface UserType {
   updated_at: Date;
 }
 
-class UserModel {
-  userDatabase: Knex | null = null;
-  tableName: string = "users_tbl";
+const tableName: string = "users_tbl";
 
-  constructor() {
-    this.userDatabase = database;
-  }
+async function login(
+  email: string,
+  password: string
+): Promise<UserType | JsonError | null> {
+  let user: UserType | JsonError | null = null;
+  try {
+    await database.transaction(async (trx: Knex.Transaction) => {
+      const zoomedUser: UserType = await trx
+        .select("*")
+        .from(tableName)
+        .where("email", email)
+        .and.where("password", password)
+        .first();
 
-  async login(
-    email: string,
-    password: string
-  ): Promise<UserType | JsonError | null> {
-    let user: UserType | JsonError | null = null;
-    try {
-      await this.userDatabase?.transaction(async (trx: Knex.Transaction) => {
-        const zoomedUser: UserType = await trx
-          .select("*")
-          .from(this.tableName)
-          .where("email", email)
-          .and.where("password", password)
-          .first();
+      console.log(zoomedUser);
 
-        console.log(zoomedUser);
-
-        if (!zoomedUser) {
-          user = {
-            status: 401,
-            message: "Wrong user credentials!",
-          };
-        } else {
-          user = zoomedUser;
-        }
-
-        // trx.commit();
-        // console.log(inserts.length + " new books saved.");
-      });
-    } catch (error) {
-      // If we get here, that means that neither the 'Old Books' catalogues insert,
-      // nor any of the books inserts will have taken place.
-      console.error(error);
-      if (error instanceof Error)
-        return {
-          status: 500,
-          message: error.message,
+      if (!zoomedUser) {
+        user = {
+          status: 401,
+          message: "Wrong user credentials!",
         };
-    }
-    return user;
-    // this.userDatabase?.transaction
+      } else {
+        user = zoomedUser;
+      }
+    });
+  } catch (error) {
+    // If we get here, that means that neither the 'Old Books' catalogues insert,
+    // nor any of the books inserts will have taken place.
+    console.error(error);
+    if (error instanceof Error)
+      return {
+        status: 500,
+        message: error.message,
+      };
   }
+  return user;
 }
 
-export default UserModel;
+const userModel = {
+  tableName,
+  login,
+}
+
+export default userModel;
