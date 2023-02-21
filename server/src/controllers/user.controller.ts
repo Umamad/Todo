@@ -24,23 +24,15 @@ async function login(req: Request, res: Response) {
 }
 
 async function refreshUser(req: Request, res: Response) {
-  if (!refreshTokens.includes(req.body.token))
-    res.status(400).send("Refresh Token Invalid");
+  if (!req.body.token)
+    return res.status(400).json({
+      status: 400,
+      message: "Invalid token",
+    });
 
-  const newRefreshTokens = refreshTokens.filter((c) => c != req.body.token);
-  setRefreshTokens(newRefreshTokens);
+  const result = await userModel.refreshToken(req.body.token);
 
-  const { email } = jwt.decode(req.body.token) as JwtPayload;
-
-  // remove the old refreshToken from the refreshTokens list
-  const accessToken = generateAccessToken({
-    email,
-  } as UserType);
-  const refreshToken = generateRefreshToken({
-    email,
-  } as UserType);
-  //generate new accessToken and refreshTokens
-  res.json({ accessToken: accessToken, refreshToken: refreshToken });
+  return res.status(result.status ? result.status : 200).json(result);
 }
 
 const userController = {

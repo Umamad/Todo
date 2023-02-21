@@ -6,6 +6,8 @@ config();
 
 // import { database } from "./db/knexfile";
 // database.seed.run();
+// database.migrate.latest();
+// database.migrate.rollback()
 
 import router from "./routes/router";
 

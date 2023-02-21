@@ -1,10 +1,13 @@
 import { Knex } from "knex";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 import { database } from "../db/knexfile";
-
 import { JsonError } from "../utils/errorbuilder";
-import { generateAccessToken, generateRefreshToken } from "../utils/tokenGenerators";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../utils/tokenGenerators";
 
 export interface UserType {
   id: number;
@@ -12,6 +15,9 @@ export interface UserType {
   password: string;
   created_at: Date;
   updated_at: Date;
+}
+interface JwtPayload {
+  email: string;
 }
 
 const tableName: string = "users_tbl";
@@ -44,6 +50,15 @@ async function login(
           const { password, ...restZoomedUser } = zoomedUser;
           const accessToken = generateAccessToken(restZoomedUser as UserType);
           const refreshToken = generateRefreshToken(restZoomedUser as UserType);
+
+          const res = await trx
+            .insert({
+              refresh_token: refreshToken,
+              created_at: new Date(),
+              updated_at: new Date(),
+            })
+            .into("refresh_token_tbl");
+
           user = { ...restZoomedUser, accessToken, refreshToken } as any;
         } else {
           user = {
@@ -65,9 +80,55 @@ async function login(
   return user;
 }
 
+async function refreshToken(token: string) {
+  let result: JsonError | any = null;
+
+  try {
+    await database.transaction(async (trx: Knex.Transaction) => {
+      const refreshToken = await trx
+        .select("*")
+        .from("refresh_token_tbl")
+        .where("refresh_token", token)
+        .first();
+
+      if (!refreshToken) {
+        result = {
+          status: 400,
+          message: "Invalid token",
+        };
+      } else {
+        const { email } = jwt.decode(token) as JwtPayload;
+        const newAccessToken = generateAccessToken({ email } as UserType);
+        const newRefreshToken = generateRefreshToken({ email } as UserType);
+
+        const editTokenResult = await trx("refresh_token_tbl")
+          .update({
+            refresh_token: newRefreshToken,
+            updated_at: new Date(),
+          })
+          .where("id", refreshToken.id);
+
+        result = {
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken,
+        };
+      }
+    });
+  } catch (error) {
+    if (error instanceof Error)
+      result = result = {
+        status: 500,
+        message: error.message,
+      };
+  }
+
+  return result;
+}
+
 const userModel = {
   tableName,
   login,
+  refreshToken,
 };
 
 export default userModel;
