@@ -1,19 +1,26 @@
+import { Request, Response, NextFunction } from "express";
 import { config } from "dotenv";
 config();
 import jwt from "jsonwebtoken";
 
-function validateToken(req, res, next) {
-  //get token from request header
+export function validateToken(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers["authorization"];
+
+  if (!authHeader) return res.status(403).send("access denide");
+
   const token = authHeader.split(" ")[1];
-  //the request header contains the token "Bearer <token>", split the string and use the second value in the split array.
-  if (token == null) res.sendStatus(400).send("Token not present");
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string, (err: any, user: any) => {
-    if (err) {
-      res.status(403).send("Token invalid");
-    } else {
-      req.user = user;
-      next(); //proceed to the next action in the calling function
+
+  if (token == null) return res.status(403).send("access denide");
+  jwt.verify(
+    token,
+    process.env.ACCESS_TOKEN_SECRET as string,
+    (err: any, user: any) => {
+      if (err) {
+        return res.status(403).send("access denide");
+      } else {
+        if (req.session) req.session.user = user;
+        next();
+      }
     }
-  }); //end of jwt.verify()
-} //end of function
+  );
+}
