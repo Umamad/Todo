@@ -1,8 +1,10 @@
 import { Knex } from "knex";
+import bcrypt from "bcrypt";
 
 import { database } from "../db/knexfile";
 
 import { JsonError } from "../utils/errorbuilder";
+import { generateAccessToken, generateRefreshToken } from "../utils/tokenGenerators";
 
 export interface UserType {
   id: number;
@@ -17,32 +19,43 @@ const tableName: string = "users_tbl";
 async function login(
   email: string,
   password: string
-): Promise<UserType | JsonError | null> {
-  let user: UserType | JsonError | null = null;
+): Promise<any | JsonError> {
+  let user: UserType | JsonError | any = null;
   try {
     await database.transaction(async (trx: Knex.Transaction) => {
       const zoomedUser: UserType = await trx
-        .select("*")
+        .select("email", "password")
         .from(tableName)
         .where("email", email)
-        .and.where("password", password)
         .first();
-
-      console.log(zoomedUser);
 
       if (!zoomedUser) {
         user = {
-          status: 401,
-          message: "Wrong user credentials!",
+          status: 404,
+          message: "There is no such a user",
         };
       } else {
-        user = zoomedUser;
+        const correctPassword = await bcrypt.compare(
+          password,
+          zoomedUser.password
+        );
+
+        if (correctPassword) {
+          const { password, ...restZoomedUser } = zoomedUser;
+          const accessToken = generateAccessToken(restZoomedUser as UserType);
+          const refreshToken = generateRefreshToken(restZoomedUser as UserType);
+          user = { ...restZoomedUser, accessToken, refreshToken } as any;
+        } else {
+          user = {
+            status: 401,
+            message: "Wrong password!",
+          };
+        }
       }
     });
   } catch (error) {
     // If we get here, that means that neither the 'Old Books' catalogues insert,
     // nor any of the books inserts will have taken place.
-    console.error(error);
     if (error instanceof Error)
       return {
         status: 500,
@@ -55,6 +68,6 @@ async function login(
 const userModel = {
   tableName,
   login,
-}
+};
 
 export default userModel;

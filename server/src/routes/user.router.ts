@@ -5,6 +5,6 @@ import userController from "../controllers/user.controller";
 const userRouter = express.Router();
 
 userRouter.post("/login", userController.login);
-userRouter.get('/user', userController.get);
+userRouter.patch('/refresh-token', userController.refreshUser);
 
 export default userRouter;
