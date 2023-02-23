@@ -6,5 +6,6 @@ const userRouter = express.Router();
 
 userRouter.post("/login", userController.login);
 userRouter.patch('/refresh-token', userController.refreshUser);
+userRouter.delete('/logout', userController.logout)
 
 export default userRouter;

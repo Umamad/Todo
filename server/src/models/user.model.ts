@@ -108,9 +108,7 @@ async function refreshToken(token: string) {
                 status: 401,
                 message: "Unauthorized",
               };
-              await trx("refresh_token_tbl")
-                .del()
-                .where("id", refreshToken.id);
+              await trx("refresh_token_tbl").del().where("id", refreshToken.id);
               return;
             }
             const { email } = jwt.decode(token) as JwtPayload;
@@ -143,10 +141,47 @@ async function refreshToken(token: string) {
   return result;
 }
 
+async function logout(token: string) {
+  let result: any;
+  try {
+    await database.transaction(async (trx: Knex.Transaction) => {
+      const refreshToken = await trx
+        .select("*")
+        .from("refresh_token_tbl")
+        .where("refresh_token", token)
+        .first();
+
+      if (!refreshToken) {
+        result = {
+          status: 400,
+          message: "Invalid token",
+        };
+      } else {
+        const deleteResult = await trx("refresh_token_tbl")
+          .del()
+          .where("id", refreshToken.id);
+
+        result = {
+          status: 204,
+          message: "logged out successfully",
+        };
+      }
+    });
+  } catch (error) {
+    if (error instanceof Error)
+      result = result = {
+        status: 500,
+        message: error.message,
+      };
+  }
+  return result;
+}
+
 const userModel = {
   tableName,
   login,
   refreshToken,
+  logout,
 };
 
 export default userModel;
