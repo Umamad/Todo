@@ -1,6 +1,8 @@
 import { Knex } from "knex";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { config } from "dotenv";
+config();
 
 import { database } from "../db/knexfile";
 import { JsonError } from "../utils/errorbuilder";
@@ -97,21 +99,37 @@ async function refreshToken(token: string) {
           message: "Invalid token",
         };
       } else {
-        const { email } = jwt.decode(token) as JwtPayload;
-        const newAccessToken = generateAccessToken({ email } as UserType);
-        const newRefreshToken = generateRefreshToken({ email } as UserType);
+        await jwt.verify(
+          token,
+          process.env.REFRESH_TOKEN_SECRET as string,
+          async (err, res) => {
+            if (err) {
+              result = {
+                status: 401,
+                message: "Unauthorized",
+              };
+              await trx("refresh_token_tbl")
+                .del()
+                .where("id", refreshToken.id);
+              return;
+            }
+            const { email } = jwt.decode(token) as JwtPayload;
+            const newAccessToken = generateAccessToken({ email } as UserType);
+            const newRefreshToken = generateRefreshToken({ email } as UserType);
 
-        const editTokenResult = await trx("refresh_token_tbl")
-          .update({
-            refresh_token: newRefreshToken,
-            updated_at: new Date(),
-          })
-          .where("id", refreshToken.id);
+            const editTokenResult = await trx("refresh_token_tbl")
+              .update({
+                refresh_token: newRefreshToken,
+                updated_at: new Date(),
+              })
+              .where("id", refreshToken.id);
 
-        result = {
-          accessToken: newAccessToken,
-          refreshToken: newRefreshToken,
-        };
+            result = {
+              accessToken: newAccessToken,
+              refreshToken: newRefreshToken,
+            };
+          }
+        );
       }
     });
   } catch (error) {
