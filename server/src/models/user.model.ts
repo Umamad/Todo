@@ -22,7 +22,7 @@ interface JwtPayload {
   email: string;
 }
 
-const tableName: string = "users_tbl";
+const TABLE_NAME: string = "users_tbl";
 
 async function login(
   email: string,
@@ -33,7 +33,7 @@ async function login(
     await database.transaction(async (trx: Knex.Transaction) => {
       const zoomedUser: UserType = await trx
         .select("email", "password")
-        .from(tableName)
+        .from(TABLE_NAME)
         .where("email", email)
         .first();
 
@@ -177,11 +177,23 @@ async function logout(token: string) {
   return result;
 }
 
+async function getUserByEmail(email: string): Promise<UserType> {
+  const user = await database(TABLE_NAME)
+    .select("*")
+    .where("email", email)
+    .first();
+
+  if (!user) throw Error("There is no such a user");
+
+  return user;
+}
+
 const userModel = {
-  tableName,
+  TABLE_NAME,
   login,
   refreshToken,
   logout,
+  getUserByEmail,
 };
 
 export default userModel;
