@@ -9,7 +9,7 @@ async function login(req: Request, res: Response) {
 
   if (req.session) req.session.user = user;
 
-  return res.json(user);
+  return res.status(user.status ? user.status : 200).json(user);
 }
 
 async function refreshUser(req: Request, res: Response) {
