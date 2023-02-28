@@ -21,7 +21,7 @@
     "start": "concurrently npm:start:*",
     "migrate:make": "npx knex migrate:make --migrations-directory src/db/migrations -x ts",
     "knex:command": "knex --knexfile build/db/knexfile.js",
-    "test": "jest --detectOpenHandles"
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
