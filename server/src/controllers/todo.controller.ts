@@ -2,10 +2,6 @@ import { Request, Response } from "express";
 
 import todoMode from "../models/todo.model";
 
-// interface JwtPayload {
-//   email: string;
-// }
-
 async function getAll(req: Request, res: Response) {
   if (req.session) {
     const { email } = req.session.user;

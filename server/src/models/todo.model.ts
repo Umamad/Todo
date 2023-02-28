@@ -17,10 +17,6 @@ export interface TodoType {
   updated_at: Date;
 }
 
-// interface JwtPayload {
-//   email: string;
-// }
-
 async function getAll(email: string) {
   let result: TodoType[] | JsonError | any = null;
   try {
