@@ -1,13 +1,16 @@
-import { describe, test, beforeAll, jest } from "@jest/globals";
+import { describe, test, beforeAll, afterAll, jest } from "@jest/globals";
 import supertest from "supertest";
 
 import app from "../app";
 
-jest.setTimeout(10000);
+jest.setTimeout(20000);
 
 describe("Test todo Apis", function () {
   let commonHeaders = {
     Authorization: "",
+  };
+  let logoutBody = {
+    token: "",
   };
 
   beforeAll((done) => {
@@ -21,6 +24,17 @@ describe("Test todo Apis", function () {
       .expect(200)
       .then((response) => {
         commonHeaders.Authorization = `Bearer ${response.body.accessToken}`;
+        logoutBody.token = response.body.refreshToken;
+        done();
+      });
+  });
+
+  afterAll((done) => {
+    const result = supertest(app)
+      .delete("/user/logout")
+      .send(logoutBody)
+      .expect(204)
+      .then((_) => {
         done();
       });
   });
