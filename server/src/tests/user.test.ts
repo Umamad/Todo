@@ -1,18 +1,10 @@
-import { describe, test, afterAll, beforeAll } from "@jest/globals";
+import { describe, test, beforeAll } from "@jest/globals";
 import supertest from "supertest";
 
 import app from "../app";
 
 describe("Test user api", () => {
   const BASE_URL = "/user";
-
-  afterAll((done) => {
-    done();
-  });
-
-  beforeAll((done) => {
-    done();
-  });
 
   describe("Test login api", () => {
     const LoginUrl = `${BASE_URL}/login`;
