@@ -1,5 +1,3 @@
-import jwt from "jsonwebtoken";
-
 import userModel, { UserType } from "./user.model";
 
 import { PriorityType } from "../db/migrations/20230217100351_create_todo_table";
@@ -15,15 +13,45 @@ export interface TodoType {
   description: string;
   is_done: boolean;
   priority: PriorityType;
-  create_at: Date;
+  created_at: Date;
   updated_at: Date;
 }
 
-interface JwtPayload {
-  email: string;
+// interface JwtPayload {
+//   email: string;
+// }
+
+async function getAll(email: string) {
+  let result: TodoType[] | JsonError | any = null;
+  try {
+    await database.transaction(async (trx: Knex.Transaction) => {
+      const user: UserType = await trx(userModel.TABLE_NAME)
+        .where("email", email)
+        .first();
+
+      const todoList: TodoType[] = await trx(TABLE_NAME).where(
+        "user_id",
+        user.id
+      );
+
+      result = todoList;
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      result = {
+        status: 500,
+        message: error.message,
+      };
+    }
+  }
+
+  return result;
 }
 
-async function createTodo(newTodo: TodoType, userEmail: string): Promise<TodoType[] | JsonError | any> {
+async function createTodo(
+  newTodo: TodoType,
+  userEmail: string
+): Promise<TodoType[] | JsonError | any> {
   let result: TodoType[] | JsonError | any = null;
   try {
     await database.transaction(async (trx: Knex.Transaction) => {
@@ -34,6 +62,8 @@ async function createTodo(newTodo: TodoType, userEmail: string): Promise<TodoTyp
 
       const todoWithUser = Object.assign(newTodo, {
         user_id: user.id,
+        created_at: new Date(),
+        updated_at: new Date(),
       });
       const insertResult = await trx(TABLE_NAME).insert(todoWithUser);
       const todoList: TodoType[] = await trx(TABLE_NAME);
@@ -49,3 +79,10 @@ async function createTodo(newTodo: TodoType, userEmail: string): Promise<TodoTyp
 
   return result;
 }
+
+const todoModel = {
+  getAll,
+  createTodo,
+};
+
+export default todoModel;
