@@ -76,9 +76,36 @@ async function createTodo(
   return result;
 }
 
+async function editTodoById(id: number, email: string, todoBody: TodoType) {
+  let result: TodoType[] | JsonError | any = null;
+
+  try {
+    await database.transaction(async (trx: Knex.Transaction) => {
+      const updateResult = await trx(TABLE_NAME)
+        .update({
+          ...todoBody,
+          updated_at: new Date(),
+        })
+        .where("id", id);
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      result = {
+        status: 500,
+        message: error.message,
+      };
+    }
+  }
+
+  result = await getAll(email);
+
+  return result;
+}
+
 const todoModel = {
   getAll,
   createTodo,
+  editTodoById,
 };
 
 export default todoModel;
