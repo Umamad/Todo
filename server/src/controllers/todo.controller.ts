@@ -39,10 +39,23 @@ async function patchTodo(req: Request, res: Response) {
   }
 }
 
+async function deleteTodo(req: Request, res: Response) {
+  const id = Number(req.params.id);
+  if (!id)
+    return res.status(400).json({
+      message: "Invalid id",
+    });
+
+  const result = await todoModel.deleteTodoById(id);
+
+  return res.status(result?.status).json({ message: result.message });
+}
+
 const todoController = {
   getAll,
   postTodo,
   patchTodo,
+  deleteTodo,
 };
 
 export default todoController;

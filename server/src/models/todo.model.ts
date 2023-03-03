@@ -102,10 +102,33 @@ async function editTodoById(id: number, email: string, todoBody: TodoType) {
   return result;
 }
 
+async function deleteTodoById(id: number): Promise<JsonError> {
+  let result: JsonError = {
+    status: 400,
+    message: "not valid",
+  };
+  try {
+    const deleteResult = await database(TABLE_NAME).where("id", id).del();
+    result = {
+      status: 204,
+      message: "deleted successfully",
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      result = {
+        status: 500,
+        message: error.message,
+      };
+    }
+  }
+  return result;
+}
+
 const todoModel = {
   getAll,
   createTodo,
   editTodoById,
+  deleteTodoById,
 };
 
 export default todoModel;
