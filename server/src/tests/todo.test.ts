@@ -155,4 +155,36 @@ describe("Test todo Apis", function () {
         .expect(403);
     });
   });
+
+  describe("Delete todo", () => {
+    test("Should be success", async () => {
+      const result = await supertest(app)
+        .delete(`/todo/${editableTodoId}`)
+        .set(commonHeaders)
+        .expect(204);
+    });
+
+    test("Should fail not found", async () => {
+      const result = await supertest(app)
+        .delete(`/todo`)
+        .set(commonHeaders)
+        .expect(404);
+    });
+
+    test("Should fail with 400", async () => {
+      const result = await supertest(app)
+        .delete(`/todo/asda`)
+        .set(commonHeaders)
+        .expect("Content-Type", /json/)
+        .expect(400);
+
+      expect(result.body.message).toEqual("Invalid id");
+    });
+
+    test("Should be forbidden", async () => {
+      const result = await supertest(app)
+        .delete(`/todo/${editableTodoId}`)
+        .expect(403);
+    });
+  });
 });
