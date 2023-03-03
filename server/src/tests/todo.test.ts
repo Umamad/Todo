@@ -3,14 +3,11 @@ import {
   test,
   beforeAll,
   afterAll,
-  jest,
   expect,
 } from "@jest/globals";
 import supertest from "supertest";
 
 import app from "../app";
-
-jest.setTimeout(20000);
 
 describe("Test todo Apis", function () {
   let editableTodoId = 0;
