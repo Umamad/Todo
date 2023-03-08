@@ -1,0 +1,487 @@
+{
+  "openapi": "3.0.0",
+  "swagger": "3.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Todo API",
+    "description": "Simple Todo API"
+  },
+  "basePath": "http://localhost:3000",
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "user login body": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "required": true
+          },
+          "password": {
+            "type": "string",
+            "required": true
+          }
+        }
+      },
+      "Todo": {
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "uniq identity of todo"
+          },
+          "user_id": {
+            "type": "number",
+            "description": "the id of todo owner"
+          },
+          "title": {
+            "type": "string",
+            "description": "title of todo"
+          },
+          "description": {
+            "type": "string",
+            "description": "the notes of descriptions about todo",
+            "nullable": true
+          },
+          "is_done": {
+            "type": "number",
+            "description": "status of todo",
+            "enum": [0, 1]
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "medium", "high"],
+            "description": "importance of todo"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "creation date of todo"
+          },
+          "updated_at": {
+            "type": "string",
+            "description": "modification date of todo"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Invalid parameter",
+        "application/json": {
+          "schema": {
+            "properties": {
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Invalid email address",
+        "application/json": {
+          "schema": {
+            "properties": {
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "Invalid access token",
+        "application/json": {
+          "schema": {
+            "properties": {
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "5XX": {
+        "description": "Internal server error",
+        "application/json": {
+          "schema": {
+            "properties": {
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/user/login": {
+      "post": {
+        "description": "user login",
+        "tags": ["User"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/user login body"
+              },
+              "example": {
+                "email": "test1@gmail.com",
+                "password": "hello12345"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Now you have access to all apis",
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "accessToken": {
+                    "type": "string"
+                  },
+                  "refreshToken": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#components/responses/404"
+          },
+          "401": {
+            "description": "Wrong password",
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "5XX": {
+            "$ref": "#components/responses/5XX"
+          }
+        }
+      }
+    },
+    "/user/refresh-token": {
+      "patch": {
+        "description": "refresh access token using refresh token",
+        "tags": ["User"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Now you have new access and refresh token",
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "accessToken": {
+                    "type": "string"
+                  },
+                  "refreshToken": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid access token",
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "5XX": {
+            "$ref": "#components/responses/5XX"
+          }
+        }
+      }
+    },
+    "/user/logout": {
+      "delete": {
+        "description": "logout user",
+        "tags": ["User"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "You're logged out successfully"
+          },
+          "400": {
+            "description": "Invalid access token",
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "5XX": {
+            "$ref": "#components/responses/5XX"
+          }
+        }
+      }
+    },
+    "/todo": {
+      "get": {
+        "description": "Get list of todo related to signed in user",
+        "tags": ["Todo"],
+        "responses": {
+          "200": {
+            "description": "You have list",
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "$ref": "#components/schemas/Todo"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#components/responses/403"
+          },
+          "5XX": {
+            "$ref": "#components/responses/5XX"
+          }
+        }
+      },
+      "post": {
+        "description": "Create a new todo",
+        "tags": ["Todo"],
+        "requestBody": {
+          "description": "post a todo",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "title of todo"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "the notes of descriptions about todo",
+                    "nullable": true
+                  },
+                  "is_done": {
+                    "type": "number",
+                    "description": "status of todo",
+                    "enum": [0, 1],
+                    "nullable": true
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": ["low", "medium", "high"],
+                    "description": "importance of todo"
+                  }
+                },
+                "example": {
+                  "title": "test todo 2",
+                  "description": "test description 2",
+                  "priority": "high"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "You will receive fresh list of todo",
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "$ref": "#components/schemas/Todo"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#components/responses/400"
+          },
+          "403": {
+            "$ref": "#components/responses/403"
+          },
+          "5XX": {
+            "$ref": "#components/responses/5XX"
+          }
+        }
+      }
+    },
+    "/todo/{id}": {
+      "patch": {
+        "description": "Edit a todo",
+        "tags": ["Todo"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "type": "number",
+              "description": "id of todo"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "edit a todo",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "title of todo"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "the notes of descriptions about todo",
+                    "nullable": true
+                  },
+                  "is_done": {
+                    "type": "number",
+                    "description": "status of todo",
+                    "enum": [0, 1],
+                    "nullable": true
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": ["low", "medium", "high"],
+                    "description": "importance of todo"
+                  }
+                },
+                "example": {
+                  "title": "test edited todo 2",
+                  "description": "test edited description 2",
+                  "is_done": 1,
+                  "priority": "low"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "You will receive fresh list of todo",
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "$ref": "#components/schemas/Todo"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#components/responses/400"
+          },
+          "403": {
+            "$ref": "#components/responses/403"
+          },
+          "5XX": {
+            "$ref": "#components/responses/5XX"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete a todo",
+        "tags": ["Todo"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "type": "number",
+              "description": "id of todo"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful"
+          },
+          "400": {
+            "$ref": "#components/responses/400"
+          },
+          "403": {
+            "$ref": "#components/responses/403"
+          },
+          "5XX": {
+            "$ref": "#components/responses/5XX"
+          }
+        }
+      }
+    }
+  }
+}
