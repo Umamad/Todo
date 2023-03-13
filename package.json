@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "A little todo application",
   "scripts": {
-    "install:client": "npm install --prefix client",
-    "install:server": "npm install --prefix server",
+    "install:client": "npm run install --prefix client",
+    "install:server": "npm run install --prefix server",
     "install": "npm run install:client && npm run install:server",
     "start:client": "npm start --prefix client",
-    "start:server": "npm start --prefix server",
-    "start": "npm start:client && npm start:server"
+    "start:server": "npm run dev --prefix server",
+    "start": "npm run start:client && npm run start:server"
   },
   "keywords": [],
   "author": "Mohammad Saadati",

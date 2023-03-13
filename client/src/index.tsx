@@ -4,10 +4,11 @@ import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 
+import MainRouter from "./routes/Main.router";
+
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import appTheme from "./components/appTheme";
 
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(
@@ -18,7 +19,7 @@ root.render(
     <Provider store={store}>
       <ThemeProvider theme={appTheme}>
         <CssBaseline />
-        <App />
+        <MainRouter />
       </ThemeProvider>
     </Provider>
   </React.StrictMode>
