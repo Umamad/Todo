@@ -25,6 +25,7 @@ const appTheme = createTheme({
     },
     h1: {
       fontSize: 40,
+      fontWeight: "bolder",
       // color: "white",
     },
     h5: {
@@ -34,6 +35,9 @@ const appTheme = createTheme({
     subtitle1: {
       fontSize: 16,
     },
+    button: {
+      textTransform: "none",
+    }
   },
   shape: {
     borderRadius: 4,
