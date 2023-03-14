@@ -9,6 +9,9 @@ import MainRouter from "./routes/Main.router";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import appTheme from "./components/appTheme";
 
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(
@@ -20,6 +23,7 @@ root.render(
       <ThemeProvider theme={appTheme}>
         <CssBaseline />
         <MainRouter />
+        <ToastContainer theme="dark" limit={3} autoClose={3000} />
       </ThemeProvider>
     </Provider>
   </React.StrictMode>
