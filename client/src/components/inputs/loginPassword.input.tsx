@@ -6,7 +6,7 @@ import LockIcon from "@mui/icons-material/Lock";
 
 import AppInput from "./app.input";
 
-const LoginPasswordInput: FC<TextFieldProps> = () => {
+const LoginPasswordInput: FC<TextFieldProps> = (props) => {
   return (
     <AppInput
       label="Password"
@@ -22,6 +22,7 @@ const LoginPasswordInput: FC<TextFieldProps> = () => {
       }}
       fullWidth
       margin="normal"
+      {...props}
     />
   );
 };

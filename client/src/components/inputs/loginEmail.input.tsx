@@ -5,7 +5,7 @@ import EmailIcon from "@mui/icons-material/Email";
 
 import AppInput from "./app.input";
 
-const LoginEmailInput: FC<TextFieldProps> = () => {
+const LoginEmailInput: FC<TextFieldProps> = (props) => {
   return (
     <AppInput
       label="Email"
@@ -21,6 +21,7 @@ const LoginEmailInput: FC<TextFieldProps> = () => {
       }}
       fullWidth
       margin="normal"
+      {...props}
     />
   );
 };
