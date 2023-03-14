@@ -1,13 +1,12 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
 
+import { useAppSelector } from "./hooks/useAppRedux";
 import { Container } from "@mui/material";
-import { RootState } from "./redux/store";
 
 function App() {
-  const { isLogin } = useSelector((state: RootState) => state.user);
+  const { currentUser } = useAppSelector((state) => state.user);
 
-  if (!isLogin) return <Navigate to="/login" />;
+  if (!currentUser) return <Navigate to="/login" />;
 
   return (
     <Container maxWidth="xl">

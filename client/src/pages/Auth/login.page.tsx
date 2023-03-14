@@ -1,16 +1,15 @@
 import { FC } from "react";
 import { Container } from "@mui/material";
-import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+
+import { useAppSelector } from "../../hooks/useAppRedux";
 
 import LoginForm from "../../components/forms/login.form";
 
-import { RootState } from "../../redux/store";
-
 const LoginPage: FC = () => {
-  const { isLogin } = useSelector((state: RootState) => state.user);
+  const { currentUser } = useAppSelector((state) => state.user);
 
-  if (isLogin) return <Navigate to="/todo" />;
+  if (currentUser) return <Navigate to="/todo" />;
 
   return (
     <Container
@@ -19,7 +18,7 @@ const LoginPage: FC = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        height: "100vh"
+        height: "100vh",
       }}
     >
       <LoginForm />
