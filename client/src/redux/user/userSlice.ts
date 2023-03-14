@@ -1,5 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AxiosResponse } from "axios";
+import { createSlice } from "@reduxjs/toolkit";
 
 import { userLogin } from "./userActions";
 
@@ -11,13 +10,11 @@ export interface IUser {
 
 interface IUserState {
   currentUser: IUser | null;
-  isLogin: boolean;
   loading: boolean;
 }
 
 const initialState: IUserState = {
   currentUser: null,
-  isLogin: false,
   loading: false,
 };
 
@@ -32,7 +29,6 @@ const userSlice = createSlice({
       })
       .addCase(userLogin.fulfilled, (state, action) => {
         state.loading = false;
-        state.isLogin = true;
         state.currentUser = action.payload as IUser;
       })
       .addCase(userLogin.rejected, (state) => {
