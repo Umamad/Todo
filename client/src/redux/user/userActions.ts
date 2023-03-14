@@ -1,10 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+
 import api from "../../utils/api";
 
 import { IUser } from "./userSlice";
 
-type IUserLoginCredentials = {
+export type IUserLoginCredentials = {
   email: string;
   password: string;
 };
