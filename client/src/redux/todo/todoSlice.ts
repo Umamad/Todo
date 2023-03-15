@@ -1,45 +1,46 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { TodoType, PriorityType } from "../../types/Todo.type";
+import { getTodoList } from "./todoActions";
 
-interface TodoStateType {
-  todoList: TodoType[];
+export enum PriorityType {
+  low = "low",
+  medium = "medium",
+  high = "high",
+}
+export interface ITodo {
+  id: number;
+  title: string;
+  description: string | null;
+  isDone: boolean;
+  priority: PriorityType;
+}
+interface ITodoState {
+  todoList: ITodo[];
+  loading: boolean;
 }
 
-const INITIAL_ID: number = 1;
-const INITIAL_STATE: TodoStateType = {
-  todoList: [
-    {
-      id: 1,
-      title: "Fix initial basket add",
-      description: null,
-      isDone: false,
-      priority: PriorityType.high,
-    },
-  ],
+const INITIAL_STATE: ITodoState = {
+  todoList: [],
+  loading: false,
 };
 
-export const todoSlice = createSlice({
+const todoSlice = createSlice({
   name: "todo",
   initialState: INITIAL_STATE,
-  reducers: {
-    addNewTodo: (state, action: PayloadAction<TodoType>) => {
-      let nextId: number = INITIAL_ID;
-      const todoListLength: number = state.todoList.length;
-
-      if (todoListLength !== 0) {
-        const latestTodo: TodoType = state.todoList[todoListLength - 1];
-        nextId = latestTodo.id + 1;
-      }
-
-      const newTodo = Object.assign(action.payload, {
-        id: nextId,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getTodoList.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getTodoList.fulfilled, (state, action) => {
+        state.todoList = action.payload ? action.payload : [];
+        state.loading = false;
+      })
+      .addCase(getTodoList.rejected, (state) => {
+        state.loading = false;
       });
-
-      state.todoList.push(newTodo);
-    },
   },
 });
 
-export const { addNewTodo } = todoSlice.actions;
+export default todoSlice;

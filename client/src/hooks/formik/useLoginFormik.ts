@@ -7,7 +7,7 @@ import { userLogin, IUserLoginCredentials } from "../../redux/user/userActions";
 
 export default function useLoginFormik() {
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector(state => state.user)
+  const { loading } = useAppSelector((state) => state.user);
 
   const initialValues = {
     email: "",
@@ -27,11 +27,9 @@ export default function useLoginFormik() {
   const formik = useFormik<IUserLoginCredentials>({
     initialValues,
     validate,
-    validateOnMount: true,
-    async onSubmit(values, formikHelpers) {
-      const result = await dispatch(userLogin(values))
-      console.log(values);
-      console.log(result);
+    validateOnMount: false,
+    async onSubmit(values) {
+      await dispatch(userLogin(values));
     },
   });
 

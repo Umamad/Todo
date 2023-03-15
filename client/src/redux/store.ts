@@ -12,7 +12,7 @@ import {
 import storage from "redux-persist/lib/storage";
 
 import userSlice from "./user/userSlice";
-import { todoSlice } from "./todo/todoSlice";
+import todoSlice from "./todo/todoSlice";
 
 const rootPersistConfig = {
   key: "root",
