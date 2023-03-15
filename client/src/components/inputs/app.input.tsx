@@ -3,6 +3,8 @@ import { styled, TextField } from "@mui/material";
 const AppInput = styled(TextField)(({ theme }) => ({
   "& input": {
     color: "#FFF",
+    fontSize: 16,
+    caretColor: theme.palette.primary.main,
   },
 
   "& label.Mui-focused": {
@@ -11,6 +13,11 @@ const AppInput = styled(TextField)(({ theme }) => ({
 
   "& div.Mui-focused .MuiInputAdornment-positionStart": {
     color: theme.palette.primary.main,
+    transition: theme.transitions.create("color"),
+  },
+
+  "& .Mui-error .MuiInputAdornment-positionStart": {
+    color: theme.palette.error.dark,
     transition: theme.transitions.create("color"),
   },
 

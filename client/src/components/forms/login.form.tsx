@@ -9,7 +9,7 @@ import LoginEmailInput from "../inputs/loginEmail.input";
 import LoginPasswordInput from "../inputs/loginPassword.input";
 
 const LoginForm: FC = () => {
-  const { formik, handleSubmit } = useLoginFormik();
+  const { formik, handleSubmit, loading } = useLoginFormik();
 
   return (
     <LoginFormContainer onSubmit={handleSubmit}>
@@ -21,15 +21,23 @@ const LoginForm: FC = () => {
         name="email"
         value={formik.values.email}
         onChange={formik.handleChange}
+        error={!!formik.errors.email}
       />
 
       <LoginPasswordInput
         name="password"
         value={formik.values.password}
         onChange={formik.handleChange}
+        error={!!formik.errors.password}
       />
 
-      <Button variant="contained" type="submit" disableElevation fullWidth>
+      <Button
+        variant="contained"
+        type="submit"
+        disabled={loading}
+        disableElevation
+        fullWidth
+      >
         LOGIN
       </Button>
     </LoginFormContainer>

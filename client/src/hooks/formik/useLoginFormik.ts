@@ -1,12 +1,13 @@
 import { useCallback, FormEvent } from "react";
 import { useFormik } from "formik";
 
-import { useAppDispatch } from "../useAppRedux";
+import { useAppDispatch, useAppSelector } from "../useAppRedux";
 
 import { userLogin, IUserLoginCredentials } from "../../redux/user/userActions";
 
 export default function useLoginFormik() {
   const dispatch = useAppDispatch();
+  const { loading } = useAppSelector(state => state.user)
 
   const initialValues = {
     email: "",
@@ -42,5 +43,6 @@ export default function useLoginFormik() {
   return {
     formik,
     handleSubmit,
+    loading,
   };
 }
