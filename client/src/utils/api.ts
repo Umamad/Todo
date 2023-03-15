@@ -14,12 +14,11 @@ const api = axios.create({
 
 api.interceptors.request.use(
   async (config) => {
-    const state = store.getState();
-    console.log(state);
 
-    // const accessToken = state.user.
-    // const token = getUserAccessToken();
-    // if (token) config.headers["Authorization"] = "Bearer " + token;
+    // Add accessToken to header
+    const state = store.getState();
+    const accessToken = state.user.currentUser?.accessToken;
+    if (accessToken) config.headers["Authorization"] = "Bearer " + accessToken;
 
     return config;
   },
