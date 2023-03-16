@@ -50,36 +50,6 @@ function MakeRouter() {
 
   return router;
 }
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: <App />,
-//     children: [
-//       {
-//         path: "/",
-//         element: <Navigate to={"/todo"} />,
-//       },
-//       {
-//         path: "/todo",
-//         element: <TodoPage />,
-//         index: true,
-
-//       },
-//       {
-//         path: "*",
-//         element: <Page404 />,
-//       },
-//     ],
-//   },
-//   {
-//     path: "/login",
-//     element: <LoginPage />,
-//   },
-//   {
-//     path: "*",
-//     element: <Page404 />,
-//   },
-// ]);
 
 const MainRouter = () => (
   <RouterProvider router={MakeRouter()} fallbackElement={<PageLoading />} />
