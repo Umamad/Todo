@@ -1,6 +1,6 @@
 import { Knex } from "knex";
 
-import { TodoType } from "../../models/todo.model";
+import { ITodo } from "../../models/todo.model";
 import { PriorityType } from "../migrations/20230217100351_create_todo_table";
 
 export async function seed(knex: Knex): Promise<void> {

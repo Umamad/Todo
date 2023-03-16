@@ -7,7 +7,7 @@ import { Knex } from "knex";
 
 const TABLE_NAME: string = "todo_tbl";
 
-export interface TodoType {
+export interface ITodo {
   id: number;
   title: string;
   description: string;
@@ -18,14 +18,14 @@ export interface TodoType {
 }
 
 async function getAll(email: string) {
-  let result: TodoType[] | JsonError | any = null;
+  let result: ITodo[] | JsonError | any = null;
   try {
     await database.transaction(async (trx: Knex.Transaction) => {
       const user: UserType = await trx(userModel.TABLE_NAME)
         .where("email", email)
         .first();
 
-      const todoList: TodoType[] = await trx(TABLE_NAME).where(
+      const todoList: ITodo[] = await trx(TABLE_NAME).where(
         "user_id",
         user.id
       );
@@ -45,10 +45,10 @@ async function getAll(email: string) {
 }
 
 async function createTodo(
-  newTodo: TodoType,
+  newTodo: ITodo,
   userEmail: string
-): Promise<TodoType[] | JsonError | any> {
-  let result: TodoType[] | JsonError | any = null;
+): Promise<ITodo[] | JsonError | any> {
+  let result: ITodo[] | JsonError | any = null;
   try {
     await database.transaction(async (trx: Knex.Transaction) => {
       const user: UserType = await trx(userModel.TABLE_NAME)
@@ -62,7 +62,7 @@ async function createTodo(
         updated_at: new Date(),
       });
       const insertResult = await trx(TABLE_NAME).insert(todoWithUser);
-      const todoList: TodoType[] = await trx(TABLE_NAME);
+      const todoList: ITodo[] = await trx(TABLE_NAME);
       result = todoList;
     });
   } catch (error) {
@@ -76,8 +76,8 @@ async function createTodo(
   return result;
 }
 
-async function editTodoById(id: number, email: string, todoBody: TodoType) {
-  let result: TodoType[] | JsonError | any = null;
+async function editTodoById(id: number, email: string, todoBody: ITodo) {
+  let result: ITodo[] | JsonError | any = null;
 
   try {
     await database.transaction(async (trx: Knex.Transaction) => {

@@ -6,7 +6,7 @@ import { UserType } from "../models/user.model";
 
 export function generateAccessToken(user: UserType) {
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET as string, {
-    expiresIn: "15m",
+    expiresIn: "1m",
   });
 }
 
@@ -17,7 +17,7 @@ export function generateRefreshToken(user: UserType): string {
     user,
     process.env.REFRESH_TOKEN_SECRET as string,
     {
-      expiresIn: "20m",
+      expiresIn: "2m",
     }
   );
   refreshTokens.push(refreshToken);
