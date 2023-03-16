@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { userLogin } from "./userActions";
+import { logoutUser, refreshUser, userLogin } from "./userActions";
 
 export interface IUser {
   email: string;
@@ -21,7 +21,11 @@ const initialState: IUserState = {
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    renewUser: (state, action: PayloadAction<IUser>) => {
+      state.currentUser = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(userLogin.pending, (state) => {
@@ -34,7 +38,33 @@ const userSlice = createSlice({
       .addCase(userLogin.rejected, (state) => {
         state.loading = false;
       });
+
+    builder
+      .addCase(refreshUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(refreshUser.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(refreshUser.rejected, (state) => {
+        state.loading = false;
+      });
+
+    builder
+      .addCase(logoutUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.currentUser = null;
+        state.loading = false;
+      })
+      .addCase(logoutUser.rejected, (state) => {
+        state.currentUser = null;
+        state.loading = false;
+      });
   },
 });
+
+export const { renewUser } = userSlice.actions;
 
 export default userSlice;
