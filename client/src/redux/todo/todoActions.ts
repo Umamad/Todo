@@ -22,8 +22,7 @@ export const getTodoList = createAsyncThunk(
             successAction: getTodoList,
           } as IRefreshUserAction)
         );
-
-      toast.error(err.response?.data.message);
+      else toast.error(err.response?.data.message);
 
       return thunkApi.rejectWithValue([]);
     }
