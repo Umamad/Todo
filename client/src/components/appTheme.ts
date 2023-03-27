@@ -7,6 +7,7 @@ const appTheme = createTheme({
   palette: {
     background: {
       default: "#333333",
+      paper: "#333333",
     },
     primary: {
       main: PRIMARY_COLOR,
@@ -19,14 +20,13 @@ const appTheme = createTheme({
     allVariants: {
       color: "white",
     },
+
     body1: {
       fontSize: 18,
-      // color: 'white',
     },
     h1: {
       fontSize: 40,
       fontWeight: "bolder",
-      // color: "white",
     },
     h5: {
       fontSize: 24,

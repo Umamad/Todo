@@ -10,6 +10,7 @@ const LoginFormContainer = styled((props: BoxProps) => (
   background:
     "linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.2) 100%)",
   backdropFilter: "blur(10px)",
+  WebkitBackdropFilter: "blur(10px)",
   padding: theme.spacing(4),
 
   "& h1": {
