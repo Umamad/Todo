@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { getTodoList } from "./todoActions";
+import { getTodoList, addEditTodo } from "./todoActions";
 
 export enum PriorityType {
   low = "low",
@@ -8,19 +8,21 @@ export enum PriorityType {
   high = "high",
 }
 export interface ITodo {
-  id: number;
+  id?: number;
   title: string;
   description: string | null;
-  isDone: boolean;
+  is_done: boolean;
   priority: PriorityType;
 }
 interface ITodoState {
   todoList: ITodo[];
+  addEditFormInitialData: ITodo | null;
   loading: boolean;
 }
 
 const INITIAL_STATE: ITodoState = {
   todoList: [],
+  addEditFormInitialData: null,
   loading: false,
 };
 
@@ -38,6 +40,20 @@ const todoSlice = createSlice({
         state.loading = false;
       })
       .addCase(getTodoList.rejected, (state) => {
+        state.loading = false;
+      });
+
+    builder
+      .addCase(addEditTodo.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addEditTodo.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.todoList = action.payload;
+        }
+        state.loading = false;
+      })
+      .addCase(addEditTodo.rejected, (state) => {
         state.loading = false;
       });
   },
