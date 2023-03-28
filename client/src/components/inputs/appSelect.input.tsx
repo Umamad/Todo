@@ -22,6 +22,10 @@ interface IAppSelectInputProps {
 }
 
 export const AppFormControl = styled(FormControl)(({ theme }) => ({
+  "& .MuiInputBase-root": {
+    color: "#FFF",
+  },
+
   "& .MuiInputBase-root svg": {
     color: "#FFF",
     transition: theme.transitions.create("color"),
