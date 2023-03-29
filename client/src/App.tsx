@@ -14,6 +14,7 @@ function App() {
     <PageContainer
       sx={{
         p: { xs: 1, sm: 2, md: 4 },
+        alignContent: "flex-start",
       }}
     >
       <Grid container justifyContent="center">
