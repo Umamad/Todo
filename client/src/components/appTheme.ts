@@ -1,5 +1,17 @@
 import { createTheme } from "@mui/material";
 
+import { PriorityType } from "../redux/todo/todoSlice";
+
+declare module "@mui/material/styles" {
+  interface PaletteOptions {
+    priority?: {
+      [PriorityType.high]?: string;
+      [PriorityType.medium]?: string;
+      [PriorityType.low]?: string;
+    };
+  }
+}
+
 const PRIMARY_COLOR = "#F19805";
 const SECONDARY_COLOR = "#444444";
 
@@ -14,6 +26,11 @@ const appTheme = createTheme({
     },
     secondary: {
       main: SECONDARY_COLOR,
+    },
+    priority: {
+      [PriorityType.high]: "#DB4437",
+      [PriorityType.medium]: "#F4B400",
+      [PriorityType.low]: "#4285F4",
     },
   },
   typography: {
@@ -37,11 +54,11 @@ const appTheme = createTheme({
     },
     button: {
       textTransform: "none",
-    }
+    },
   },
   shape: {
     borderRadius: 4,
-  }
+  },
 });
 
 export default appTheme;
