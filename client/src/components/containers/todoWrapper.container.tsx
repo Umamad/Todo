@@ -3,7 +3,13 @@ import { styled } from "@mui/material";
 const TodoWrapperContainer = styled("div")(({ theme }) => ({
   width: "70%",
   marginInline: "auto",
-  marginTop: theme.spacing(3),
+  marginBlock: theme.spacing(3),
+  borderRadius: 4,
+  overflow: "hidden",
+
+  "& > div": {
+    marginBottom: theme.spacing(2),
+  },
 
   [theme.breakpoints.down("md")]: {
     width: "85%",
