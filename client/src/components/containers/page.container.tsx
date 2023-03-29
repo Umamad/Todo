@@ -8,7 +8,7 @@ const PageContainer = styled((props: ContainerProps) => (
     alignItems: "center",
     justifyContent: "center",
     flexWrap: "wrap",
-    height: "100vh",
+    height: "100dvh",
   })
 );
 
