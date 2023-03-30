@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { getTodoList, addEditTodo } from "./todoActions";
+import { getTodoList, addEditTodo, markTodoAsComplete } from "./todoActions";
 
 export enum PriorityType {
   low = "low",
@@ -54,6 +54,20 @@ const todoSlice = createSlice({
         state.loading = false;
       })
       .addCase(addEditTodo.rejected, (state) => {
+        state.loading = false;
+      });
+
+    builder
+      .addCase(markTodoAsComplete.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(markTodoAsComplete.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.todoList = action.payload;
+        }
+        state.loading = false;
+      })
+      .addCase(markTodoAsComplete.rejected, (state) => {
         state.loading = false;
       });
   },

@@ -42,9 +42,7 @@ export const addEditTodo = createAsyncThunk(
     } successfully`;
 
     try {
-      const result = (
-        await api[requestMethod]<ITodo[]>(requestUrl, todo)
-      ).data;
+      const result = (await api[requestMethod]<ITodo[]>(requestUrl, todo)).data;
       toast.success(successResponseMessage);
       return result;
     } catch (error) {
@@ -52,7 +50,33 @@ export const addEditTodo = createAsyncThunk(
       if (err.response?.status === 403)
         await thunkApi.dispatch(
           refreshUser({
-            successAction: getTodoList,
+            successAction: addEditTodo,
+          } as IRefreshUserAction)
+        );
+      else toast.error(err.response?.data.message);
+
+      return thunkApi.rejectWithValue([]);
+    }
+  }
+);
+
+export const markTodoAsComplete = createAsyncThunk(
+  "todo/markTodoAsComplete",
+  async (todoId: number, thunkApi) => {
+    try {
+      const result = (
+        await api.patch<ITodo[]>(`/todo/${todoId}`, { is_done: 1 })
+      ).data;
+      toast.success("Confabulations");
+      return result;
+    } catch (error) {
+      const err = error as AxiosError<any>;
+      console.log(err);
+
+      if (err.response?.status === 403)
+        await thunkApi.dispatch(
+          refreshUser({
+            successAction: markTodoAsComplete,
           } as IRefreshUserAction)
         );
       else toast.error(err.response?.data.message);

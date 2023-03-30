@@ -1,5 +1,8 @@
 import { FC } from "react";
 
+import { useAppDispatch, useAppSelector } from "../../hooks/useAppRedux";
+import { markTodoAsComplete } from "../../redux/todo/todoActions";
+
 import {
   ListItem,
   ListItemText,
@@ -19,6 +22,9 @@ type ITodoListItem = {
 };
 
 const TodoListItem: FC<ITodoListItem> = ({ todo }) => {
+  const dispatch = useAppDispatch();
+  const { loading } = useAppSelector((state) => state.todo);
+
   return (
     <>
       <ListItem role="listitem">
@@ -54,19 +60,23 @@ const TodoListItem: FC<ITodoListItem> = ({ todo }) => {
 
         {!todo.is_done && (
           <Tooltip title="Complete">
-            <IconButton color="success">
+            <IconButton
+              color="success"
+              onClick={() => dispatch(markTodoAsComplete(todo.id as number))}
+              disabled={loading}
+            >
               <DoneIcon />
             </IconButton>
           </Tooltip>
         )}
         <Tooltip title="Edit">
-          <IconButton color="warning">
+          <IconButton color="warning" disabled={loading}>
             <EditIcon />
           </IconButton>
         </Tooltip>
 
         <Tooltip title="Delete">
-          <IconButton color="error">
+          <IconButton color="error" disabled={loading}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
