@@ -1,7 +1,11 @@
 import { FC } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/useAppRedux";
-import { markTodoAsComplete, deleteTodo } from "../../redux/todo/todoActions";
+import {
+  markTodoAsComplete,
+  deleteTodo,
+  setFocusedTodo,
+} from "../../redux/todo/todoActions";
 
 import {
   ListItem,
@@ -70,7 +74,17 @@ const TodoListItem: FC<ITodoListItem> = ({ todo }) => {
           </Tooltip>
         )}
         <Tooltip title="Edit">
-          <IconButton color="warning" disabled={loading}>
+          <IconButton
+            color="warning"
+            onClick={() => {
+              dispatch(
+                setFocusedTodo({
+                  addEditFormInitialData: todo,
+                })
+              );
+            }}
+            disabled={loading}
+          >
             <EditIcon />
           </IconButton>
         </Tooltip>

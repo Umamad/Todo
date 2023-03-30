@@ -7,20 +7,20 @@ import { ITodo, PriorityType } from "../../redux/todo/todoSlice";
 import { addEditTodo } from "../../redux/todo/todoActions";
 
 export default function useAddTodoFormik() {
-  const { addEditFormInitialData } = useAppSelector((state) => state.todo);
+  const { focusedData } = useAppSelector((state) => state.todo);
   const dispatch = useAppDispatch();
 
   let initialValues: ITodo = useMemo(
     () =>
-      addEditFormInitialData
-        ? addEditFormInitialData
+      focusedData
+        ? focusedData.addEditFormInitialData
         : {
             title: "",
             description: "",
             is_done: false,
             priority: PriorityType.medium,
           },
-    [addEditFormInitialData]
+    [focusedData]
   );
 
   return useFormik({
@@ -36,7 +36,7 @@ export default function useAddTodoFormik() {
     },
     async onSubmit(values, formikHelpers) {
       const res = await dispatch(addEditTodo(values));
-
+      
       if (res.meta.requestStatus === "fulfilled") {
         formikHelpers.resetForm();
       }

@@ -5,6 +5,7 @@ import {
   addEditTodo,
   markTodoAsComplete,
   deleteTodo,
+  setFocusedTodo,
 } from "./todoActions";
 
 export enum PriorityType {
@@ -19,15 +20,20 @@ export interface ITodo {
   is_done: boolean;
   priority: PriorityType;
 }
+
+export type IFocusedTodo = {
+  addEditFormInitialData: ITodo;
+};
+
 interface ITodoState {
   todoList: ITodo[];
-  addEditFormInitialData: ITodo | null;
+  focusedData: IFocusedTodo | null;
   loading: boolean;
 }
 
 const INITIAL_STATE: ITodoState = {
   todoList: [],
-  addEditFormInitialData: null,
+  focusedData: null,
   loading: false,
 };
 
@@ -55,6 +61,7 @@ const todoSlice = createSlice({
       .addCase(addEditTodo.fulfilled, (state, action) => {
         if (action.payload) {
           state.todoList = action.payload;
+          state.focusedData = null;
         }
         state.loading = false;
       })
@@ -91,6 +98,11 @@ const todoSlice = createSlice({
       .addCase(deleteTodo.rejected, (state) => {
         state.loading = false;
       });
+
+    builder.addCase(setFocusedTodo.fulfilled, (state, action) => {
+      state.focusedData = action.payload;
+      state.loading = false;
+    });
   },
 });
 

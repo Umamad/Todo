@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
-import { ITodo } from "./todoSlice";
+import { IFocusedTodo, ITodo } from "./todoSlice";
 import { IRefreshUserAction, refreshUser } from "../user/userActions";
 
 import api from "../../utils/api";
@@ -33,16 +33,25 @@ export const addEditTodo = createAsyncThunk(
   "todo/addEdit",
   async (todo: ITodo, thunkApi) => {
     const isPatchRequest = !!(thunkApi.getState() as RootState).todo
-      .addEditFormInitialData;
+      .focusedData;
 
     const requestUrl = `/todo${isPatchRequest ? `/${todo.id}` : ""}`;
+    const requestData = isPatchRequest
+      ? {
+          title: todo.title,
+          priority: todo.priority,
+          description: todo.description,
+        }
+      : todo;
     const requestMethod = isPatchRequest ? "patch" : "post";
     const successResponseMessage = `${
       isPatchRequest ? "Updated" : "Created"
     } successfully`;
 
     try {
-      const result = (await api[requestMethod]<ITodo[]>(requestUrl, todo)).data;
+      const result = (
+        await api[requestMethod]<ITodo[]>(requestUrl, requestData)
+      ).data;
       toast.success(successResponseMessage);
       return result;
     } catch (error) {
@@ -103,5 +112,12 @@ export const deleteTodo = createAsyncThunk(
 
       return thunkApi.rejectWithValue([]);
     }
+  }
+);
+
+export const setFocusedTodo = createAsyncThunk(
+  "todo/focused",
+  (focusedTodo: IFocusedTodo) => {
+    return focusedTodo;
   }
 );
