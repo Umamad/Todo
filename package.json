@@ -8,7 +8,11 @@
     "install": "npm run install:client && npm run install:server",
     "start:client": "npm start --prefix client",
     "start:server": "npm run dev --prefix server",
-    "start": "npm run start:client && npm run start:server"
+    "start": "npm run start:client && npm run start:server",
+    "build:client": "npm run build --prefix client",
+    "build:server": "npm run build --prefix server",
+    "build": "npm run build:client && npm run build:server",
+    "deploy": "npm run build && npm run start:server"
   },
   "keywords": [],
   "author": "Mohammad Saadati",
