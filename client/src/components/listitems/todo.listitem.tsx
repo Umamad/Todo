@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/useAppRedux";
-import { markTodoAsComplete } from "../../redux/todo/todoActions";
+import { markTodoAsComplete, deleteTodo } from "../../redux/todo/todoActions";
 
 import {
   ListItem,
@@ -76,7 +76,11 @@ const TodoListItem: FC<ITodoListItem> = ({ todo }) => {
         </Tooltip>
 
         <Tooltip title="Delete">
-          <IconButton color="error" disabled={loading}>
+          <IconButton
+            color="error"
+            onClick={() => dispatch(deleteTodo(todo.id as number))}
+            disabled={loading}
+          >
             <DeleteIcon />
           </IconButton>
         </Tooltip>

@@ -71,8 +71,28 @@ export const markTodoAsComplete = createAsyncThunk(
       return result;
     } catch (error) {
       const err = error as AxiosError<any>;
-      console.log(err);
+      if (err.response?.status === 403)
+        await thunkApi.dispatch(
+          refreshUser({
+            successAction: markTodoAsComplete,
+          } as IRefreshUserAction)
+        );
+      else toast.error(err.response?.data.message);
 
+      return thunkApi.rejectWithValue([]);
+    }
+  }
+);
+
+export const deleteTodo = createAsyncThunk(
+  "todo/delete",
+  async (todoId: number, thunkApi) => {
+    try {
+      await api.delete<ITodo[]>(`/todo/${todoId}`);
+      toast.success("Deleted successfully");
+      return todoId;
+    } catch (error) {
+      const err = error as AxiosError<any>;
       if (err.response?.status === 403)
         await thunkApi.dispatch(
           refreshUser({
