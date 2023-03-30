@@ -1,3 +1,5 @@
+import path from "path";
+import { fileURLToPath } from "url";
 import express, { Request, Response } from "express";
 import cookieSession from "cookie-session";
 import helmet from "helmet";
@@ -6,6 +8,9 @@ import { config } from "dotenv";
 config();
 import swaggerUI from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // import { database } from "./db/knexfile";
 // database.seed.run();
@@ -40,12 +45,14 @@ app.use(
   })
 );
 
+app.use(express.static(path.join(__dirname, "..", "public")));
+
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 
 app.use(router);
 
 app.get("/", (req: Request, res: Response) => {
-  return res.status(200).send("Hello World!");
+  return res.sendFile(path.join(__dirname, "..", "public", "index.html"));
 });
 
 export default app;
