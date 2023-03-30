@@ -36,6 +36,7 @@ export default function useLoginFormik() {
   const handleSubmit = useCallback((e: FormEvent) => {
     e.preventDefault();
     formik.handleSubmit();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
