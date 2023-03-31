@@ -6,12 +6,12 @@ import { store } from "../redux/store";
 const NETWORK_ERROR = "ERR_NETWORK";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL:
+    process.env.NODE_ENV === "production"
+      ? "https://todo-three-black.vercel.app"
+      : "http://localhost:3000",
   headers: {
     "content-type": "application/json; charset=utf-8",
-    // "Cache-Control": "no-cache",
-    // Pragma: "no-cache",
-    // Expires: "0",
   },
 });
 
