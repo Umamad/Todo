@@ -51,7 +51,7 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 
 app.use(router);
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/*", (req: Request, res: Response) => {
   return res.sendFile(path.join(__dirname, "..", "public", "index.html"));
 });
 
