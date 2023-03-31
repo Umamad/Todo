@@ -2,5 +2,5 @@
   "version": 2,
   "name": "todo",
   "builds": [{ "src": "/server/build/app.js", "use": "@vercel/node" }],
-  "routes": [{ "src": "/(.*)", "dest": "/server/build/app.js" }]
+  "routes": [{ "src": "/(.*)", "dest": "/" }]
 }

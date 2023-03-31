@@ -24,7 +24,8 @@
     "build": "tsc",
     "start:build": "tsc -w",
     "start:run": "nodemon build/server.js",
-    "start": "concurrently npm:start:*",
+    "start:all": "concurrently npm:start:*",
+    "start": "node --es-module-specifier-resolution=node build/server.js",
     "migrate:make": "npx knex migrate:make --migrations-directory src/db/migrations -x ts",
     "knex:command": "knex --knexfile build/db/knexfile.js",
     "test": "jest --detectOpenHandles --forceExit"
