@@ -1,7 +1,0 @@
-{
-  "version": 2,
-  "name": "todo",
-  "buildCommand": "npm run build",
-  "builds": [{ "src": "/server/build/app.js", "use": "@vercel/node" }],
-  "routes": [{ "src": "/(.*)", "dest": "/" }]
-}
