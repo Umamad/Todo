@@ -221,7 +221,7 @@ const todoDoc = {
         tags: ["Todo"],
         parameters: [
           {
-            in: "query",
+            in: "path",
             name: "id",
             schema: {
               type: "number",
